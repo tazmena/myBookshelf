@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+    <div id="loginbox">
+
+        <form method = "POST", action="", id="form">
+            <h2>Log in to TAMS below!</h2>
+            {% csrf_token %}
+            <label for="email">Email:</label>
+            {{form.email}}<br>
+            <label for="password">Password:</label>
+            {{form.password}}<br>
+            <input type="submit" value="Submit" id="submit"><br>
+            <p>Not registered yet? <a href="http://localhost:8000/auctionapp/signup">Sign up here</a></p>
+
+            {% if messages %}
+            {% for message in messages %}
+                <p id="msg"{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        </form>
+    </div>
+
+</body>
+</html>
+
+<style>
+    body
+    h2{
+        color: #CFBAE1;
+    }
+
+    a:link, a:visited
+    {
+        font-weight: bold;
+        color: #CFBAE1;
+    }
+    body
+    {
+        background-color: #A4DEF9;
+        margin: 20px;
+        text-align: center;
+    }
+
+    #form
+    {
+        background-color: white;
+        border-radius: 25px;
+        padding: 40px;
+        margin: 200px;
+    }
+
+
+    #submit{
+        margin: 20px;
+        padding: 20px;
+        padding-left: 70px;
+        padding-right: 70px;
+        background-color: #CFBAE1;
+        color: white;
+        border-radius: 25px;
+    }
+
+    h2,p,label,a{
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #msg{
+        background-color: #CFBAE1;
+        color: #7354b5;
+        padding: 10px;
+        border-radius: 25px;
+    }
+</style>

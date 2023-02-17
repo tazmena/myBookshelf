@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<form method="POST" action="" id="form">
+    <h2>Sign up to TAMS below!</h2>
+    {% csrf_token %}
+    <label for="email">Email:</label>
+    {{form.email}}<br>
+    <label for="username">Username:</label>
+    {{form.username}}<br>
+    <label for="first_name">First name:</label>
+    {{form.first_name}}<br>
+    <label for="last_name">Last name:</label>
+    {{form.last_name}}<br>
+    <label for="password">Password:</label>
+    {{form.password}}<br>
+    <input type="submit" value="Submit" id="submit">
+    <p>Already have an account? <a href="http://localhost:8000/auctionapp">Log in here</a></p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p id="successmsg"{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+</form> 
+
+</body>
+</html>
+
+
+<style>
+    h2{
+        color: #CFBAE1;
+    }
+
+    a:link, a:visited
+    {
+        font-weight: bold;
+        color: #CFBAE1;
+    }
+    body
+    {
+        background-color: #A4DEF9;
+        margin: 20px;
+        text-align: center;
+    }
+
+    #form
+    {
+        background-color: white;
+        border-radius: 25px;
+        padding: 40px;
+        margin: 200px;
+    }
+
+
+    #submit{
+        margin: 20px;
+        padding: 20px;
+        padding-left: 70px;
+        padding-right: 70px;
+        background-color: #CFBAE1;
+        color: white;
+        border-radius: 25px;
+    }
+
+    h2,p, a, label{
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #successmsg{
+        background-color: #9df6bc;
+        color: #3b5945;
+        padding: 10px;
+        border-radius: 25px;
+    }
+</style>
