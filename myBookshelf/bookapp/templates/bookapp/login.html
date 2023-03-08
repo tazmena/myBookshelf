@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+    <div id="loginbox">
+
+        <form method = "POST", action="", id="form">
+            <h2>Log in to myBookshelf</h2>
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            {{form.username}}<br>
+            <label for="password">Password:</label>
+            {{form.password}}<br>
+            <input type="submit" value="Submit" id="submit"><br>
+            <p>Not registered yet? <a href="http://localhost:8000/bookapp/signup">Sign up here</a></p>
+
+            {% if messages %}
+            {% for message in messages %}
+                <p id="msg"{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        </form>
+    </div>
+
+</body>
+</html>
+
+<style>
+        body {
+        background-color: #fff8ef;
+        text-align: center;
+        margin-top: 100px;
+        margin-bottom: 100px;
+        margin-left: 350px;
+        margin-right: 350px;
+    }
+
+    h2, #email, #username, #password, #firstname, #lastname, #button, p {
+        text-align: center;
+    }
+
+    h2 {
+        color: #736056;
+        font-size: xx-large;
+    }
+
+    form {
+        background-color: #BADAD6;
+        padding: 2em;
+        border-radius: 15px;
+    }
+
+    #submit{
+        margin: 20px;
+        padding: 10px;
+        padding-left: 50px;
+        padding-right: 50px;
+        background-color: #736056;
+        color: white;
+        border-radius: 15px;
+        font-size: larger;
+    }
+
+    #successmsg{
+        background-color: #9df6bc;
+        color: #3b5945;
+        padding: 10px;
+        border-radius: 25px;
+    }
+
+    p, a, label{
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    h2{
+        font-family: 'Trebuchet MS';
+    }
+    
+</style>
