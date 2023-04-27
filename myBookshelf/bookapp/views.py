@@ -54,5 +54,5 @@ def session_api(request : HttpRequest) -> JsonResponse:
         
 def logOutUser(request : HttpRequest, user_id : int) -> HttpResponseRedirect:
     logout(request)
-    del request.session
-    HttpResponseRedirect('http://localhost:8000')
+    #del request.session
+    return HttpResponseRedirect('http://localhost:8000')

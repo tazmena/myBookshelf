@@ -32,6 +32,17 @@ export default {
         this.user_id = data.user_id
         console.log(this.user_id)
         },
+
+        async logUserOut(){
+            let response = await fetch("http://localhost:8000/bookapp/logout/" + this.user_id,
+            {
+                credentials: "include",
+                mode: "cors",
+                referrerPolicy: "no-referrer",
+                method: "GET"
+            });
+            document.location.href = "http://localhost:8000/bookapp"; //reference for logout: https://stackoverflow.com/questions/66688275/can-i-have-django-urls-and-vue-routes-in-the-same-project
+        }
     },
 }
 </script>
@@ -51,6 +62,7 @@ export default {
 		<NavbarLink to="/recommendations" icon="fas fa-solid fa-book-open">Recommendations</NavbarLink>
 		<NavbarLink to="/profile" icon="fas fa-solid fa-circle-user">Profile</NavbarLink>
         <NavbarLink to="/quiz" icon="fas fa-solid fa-clipboard-question">Quiz</NavbarLink>
+        <button id="logout" type="button" @click="logUserOut">Logout</button>
 
         <span class="collapse-icon" :class="{ 'rotate-180': collapsed }" @click="toggleNavbar">
             <i class="fas fa-angle-double-left" />
@@ -60,9 +72,9 @@ export default {
 
 <style>
 :root {
-	--navbar-bg-color: #c59fc9;
-	--navbar-item-hover: #c1e0f7;
-	--navbar-item-active: #cfbae1;
+	--navbar-bg-color: #736056;
+	--navbar-item-hover: #a8c4aa ;
+	--navbar-item-active: #311f1c;
 }
 </style>
 
@@ -91,6 +103,7 @@ export default {
         padding-bottom: 1.5em;
         margin-top: -2.5em;
         font-size: 25pt;
+        font-family: "Times New Roman", Times, serif;
     }
 
     .collapse-icon {
@@ -101,6 +114,12 @@ export default {
 	color: rgba(255, 255, 255, 0.7);
 
 	transition: 0.2s linear;
+    }
+
+    #logout {
+        background-color: white;
+        color: #311f1c;
+        margin-top: 20em;
     }
 
     .rotate-180 {
