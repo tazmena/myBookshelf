@@ -62,7 +62,12 @@ export default {
 		<NavbarLink to="/recommendations" icon="fas fa-solid fa-book-open">Recommendations</NavbarLink>
 		<NavbarLink to="/profile" icon="fas fa-solid fa-circle-user">Profile</NavbarLink>
         <NavbarLink to="/quiz" icon="fas fa-solid fa-clipboard-question">Quiz</NavbarLink>
-        <button id="logout" type="button" @click="logUserOut">Logout</button>
+        <button id="logout" type="button" @click="logUserOut">
+			<span v-if="collapsed">
+				<div>LG</div>
+			</span>
+			<span v-else>Logout</span>
+        </button>
 
         <span class="collapse-icon" :class="{ 'rotate-180': collapsed }" @click="toggleNavbar">
             <i class="fas fa-angle-double-left" />
