@@ -7,6 +7,7 @@ class User(AbstractUser):
     password = models.CharField(max_length=250)
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
+    newuser = models.BooleanField(default=True)
     
 
     def __str__(self):

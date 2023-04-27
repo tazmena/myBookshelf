@@ -2,13 +2,13 @@ from django.shortcuts import render
 from bookapp.forms import SignUpForm, LogInForm
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from bookapp.models import User
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotAllowed, HttpRequest
 
 
-def loginUser(request: HttpRequest) -> JsonResponse:
+def loginUser(request: HttpRequest) -> JsonResponse: #Code of these 3 methods written by myself for web programming module
     form = LogInForm()
     if request.method == "POST":
         form = LogInForm(data=request.POST)
@@ -43,3 +43,16 @@ def signup(request: HttpRequest) -> JsonResponse:
             messages.error(request, 'Account not created, try again.')
 
     return render(request, 'bookapp/signup.html', {'form': form})
+
+def session_api(request : HttpRequest) -> JsonResponse:
+    form = LogInForm()
+    if request.method == "GET":
+        try:
+            return JsonResponse( { 'user_id' : request.session.__getitem__("_auth_user_id") } , safe=False )
+        except:
+            return HttpResponseNotAllowed
+        
+def logOutUser(request : HttpRequest, user_id : int) -> HttpResponseRedirect:
+    logout(request)
+    del request.session
+    HttpResponseRedirect('http://localhost:8000')
