@@ -14,16 +14,14 @@ import router from "../router";
 export default {
 	data() {
 		return {
+			user: null,
+			user_id: 0,
 		};
 	},
 	computed: {
 	},
 	methods: {
-
-	},
-
-	async mounted() {
-		try {
+		async fetchUserData(){
 			let response = await fetch("http://localhost:8000/bookapp/user", {
 				credentials: "include",
 				mode: "cors",
@@ -31,13 +29,26 @@ export default {
 				method: "GET",
 			});
 			let data = await response.json();
-		} catch (e) {
-			window.location.href = "http://localhost:8000/bookapp";
+			this.user = data.user
+			this.user_id = data.user_id
+			console.log("Quiz",this.user_id)
 		}
+
+	},
+
+	async mounted() {
+		this.fetchUserData()
 	},
 
 };
 </script>
 
 <style>
+body{
+	background-color: #fff8ef;
+}
+
+.quiz h1, .quiz h2, .quiz p {
+	color: black;
+}
 </style>

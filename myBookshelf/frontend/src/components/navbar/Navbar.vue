@@ -60,9 +60,9 @@ export default {
 
 <style>
 :root {
-	--navbar-bg-color: #c59fc9;
-	--navbar-item-hover: #c1e0f7;
-	--navbar-item-active: #cfbae1;
+	--navbar-bg-color: #736056;
+	--navbar-item-hover: #311f1c;
+	--navbar-item-active: #a8c4aa;
 }
 </style>
 
