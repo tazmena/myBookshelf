@@ -1,6 +1,9 @@
 <template>
 	<div class="home">
 		<h1 class="">Home</h1>
+		<p>This is the home page. Here, you can keep track of books you want to read, and rate books you've read.</p>
+		<h2>To read</h2>
+		<h2>Completed</h2>
 	</div>
 
 
@@ -50,5 +53,14 @@ body{
 
 .home h1, .home h2, .home p {
 	color: black;
+}
+
+.home{
+    background-color: #a8c4aa;
+    padding-top: 2em;
+    padding-bottom: 17em;
+    padding-left: 10em;
+    padding-right: 10em;
+    text-align: left;
 }
 </style>

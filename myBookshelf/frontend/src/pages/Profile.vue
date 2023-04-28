@@ -1,6 +1,7 @@
 <template>
 	<div class="profile">
 		<h1 class="">Profile</h1>
+		<h2>Edit your profile</h2>
 	</div>
 </template>
 
@@ -46,5 +47,14 @@ body{
 
 .profile h1, .profile h2, .profile p {
 	color: black;
+}
+
+.profile{
+    background-color: #a8c4aa;
+    padding-top: 4em;
+    padding-bottom: 25em;
+    padding-left: 10em;
+    padding-right: 40em;
+    text-align: left;
 }
 </style>

@@ -1,6 +1,9 @@
 <template>
 	<div class="recommendation">
 		<h1 class="">Recommendations</h1>
+		<p>This is the recommendations page, here, we will be suggesting your future read!</p>
+		<h2>Based off of quiz results:</h2>
+		<h2>Based off of ratings</h2>
 	</div>
 </template>
 
@@ -46,5 +49,14 @@ body{
 
 .recommendation h1, .recommendation h2, .recommendation p {
 	color: black;
+}
+
+.recommendation{
+    background-color: #a8c4aa;
+    padding-top: 2em;
+    padding-bottom: 17em;
+    padding-left: 10em;
+    padding-right: 30em;
+    text-align: left;
 }
 </style>
