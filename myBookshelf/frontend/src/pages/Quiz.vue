@@ -7,9 +7,8 @@
 
 		<div class="search">
 			<input type="search" placeholder="Search here..." />
+			<button class="searchbutton" type="button">Search</button>
 		</div>
-		<button class="searchbutton" type="button">Search</button>
-
 	</div>
 </template>
 
@@ -61,6 +60,7 @@ body {
 
 .searchbutton{
 	color: white;
+	margin-left: 1em;
 }
 
 .search{

@@ -1,11 +1,9 @@
 <template>
 	<div class="home">
-	</div>
-
-
-
-
-	<div>
+		<h1>Home</h1>
+		<p>This is the home page, from here, you can track the books you'd like to read, and rate the ones you've read. </p>
+		<h2>To read</h2>
+		<h2>Completed</h2>
 	</div>
 </template>
 
@@ -45,14 +43,17 @@ body {
 	background-color: #fff8ef;
 }
 
-.home h1, .home p {
+.home h1, .home p, .home h2 {
 	color: black;
 	text-align: left;
 }
 
 .home{
 	background-color: #a8c4aa;
-	height: 80%;
-	width: 80%;
+	padding-top: 2em;
+	padding-bottom: 17em;
+	padding-left: 10em;
+	padding-right: 10em;
+	text-align: left;
 }
 </style>
