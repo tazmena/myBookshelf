@@ -26,7 +26,6 @@ class Book(models.Model):
     description = models.CharField(max_length=1000)
     pages = models.IntegerField()
     genres = models.CharField(max_length=1000)
-    coverImg = models.CharField(max_length=500)
 
     def __str__(self):
         return self.title
