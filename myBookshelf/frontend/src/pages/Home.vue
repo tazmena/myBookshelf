@@ -1,13 +1,10 @@
 <template>
 	<div class="home">
 		<h1 class="">Home</h1>
+		<p>Welcome back to mybookshelf, {{ user.username }}.</p>
 		<p>This is the home page. Here, you can keep track of books you want to read, and rate books you've read.</p>
 		<h2>To read</h2>
 		<h2>Completed</h2>
-	</div>
-
-
-	<div>
 	</div>
 </template>
 
@@ -35,7 +32,19 @@ export default {
 			this.user = data.user
 			this.user_id = data.user_id
 			console.log("Home",this.user_id)
-		}
+			this.getUserObj()
+		},
+		async getUserObj(){
+			let response = await fetch("http://localhost:8000/bookapp/user/"+this.user_id, {
+				credentials: "include",
+				mode: "cors",
+				referrerPolicy: "no-referrer",
+				method: "GET",
+			});
+			let data = await response.json();
+			this.user = data.user
+			console.log("Home",this.user)
+		},
 
 	},
 

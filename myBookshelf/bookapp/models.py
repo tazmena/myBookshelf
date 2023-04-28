@@ -12,6 +12,16 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+    def to_dict(self):
+        return {
+            'email': self.email,
+            'username': self.username,
+            'password' : self.password,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'newuser': self.newuser
+            }
 
 #class UserPreference():
 #    user = models.ForeignKey(User)

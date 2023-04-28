@@ -15,6 +15,7 @@ export default {
 		return {
 			user: null,
 			user_id: 0,
+			recs: []
 		};
 	},
 	computed: {
@@ -31,6 +32,29 @@ export default {
 			this.user = data.user
 			this.user_id = data.user_id
 			console.log("Recommendations",this.user_id)
+			this.getUserObj()
+		},
+		async getUserObj(){
+			let response = await fetch("http://localhost:8000/bookapp/user/"+this.user_id, {
+				credentials: "include",
+				mode: "cors",
+				referrerPolicy: "no-referrer",
+				method: "GET",
+			});
+			let data = await response.json();
+			this.user = data.user
+			console.log("Recommendations",this.user)
+		},
+		async getRecommendation(){
+			let response = await fetch("http://localhost:8000/bookapp/recommendations/"+this.user_id, {
+				credentials: "include",
+				mode: "cors",
+				referrerPolicy: "no-referrer",
+				method: "GET",
+			});
+			let data = await response.json();
+			this.recs = data.recs
+			console.log(this.recs)
 		}
 
 	},
