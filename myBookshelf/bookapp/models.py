@@ -12,3 +12,21 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+#class UserPreference():
+#    user = models.ForeignKey(User)
+#    likedBooks = models.CharField()
+
+class Book(models.Model):
+    isbn = models.CharField(max_length=250)
+    title = models.CharField(max_length=250)
+    author = models.CharField(max_length=250)
+    rating = models.FloatField()
+    likedpercent = models.IntegerField()
+    description = models.CharField(max_length=1000)
+    pages = models.IntegerField()
+    genres = models.CharField(max_length=1000)
+    coverImg = models.CharField(max_length=500)
+
+    def __str__(self):
+        return self.title
