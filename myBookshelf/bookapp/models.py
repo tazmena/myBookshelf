@@ -23,9 +23,15 @@ class User(AbstractUser):
             'newuser': self.newuser
             }
 
-#class UserPreference():
-#    user = models.ForeignKey(User)
-#    likedBooks = models.CharField()
+class UserPreference(models.Model):
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    likedbooks = models.CharField()
+
+    def to_dict(self):
+        return {
+            'user': self.user,
+            'likedbooks' : self.likedbooks,
+            }
 
 class Book(models.Model):
     isbn = models.CharField(max_length=250)
@@ -39,3 +45,15 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def to_dict(self):
+        return {
+            'isbn': self.isbn,
+            'title' : self.title,
+            'author': self.author,
+            'rating' : self.rating,
+            'likedpercent': self.likedpercent,
+            'description' : self.description,
+            'pages' : self.pages,
+            'genres' : self.genres,
+            }
