@@ -66,7 +66,7 @@ def logOutUser(request : HttpRequest, user_id : int) -> HttpResponseRedirect:
     return HttpResponseRedirect('http://localhost:8000')
 
 def contentRec(request : HttpRequest, user_id : int) -> JsonResponse:
-    df = pd.read_csv('contentbased.csv', encoding='unicode_escape', error_bad_lines = False)
+    df = pd.read_csv('content.csv', encoding='unicode_escape')
     columns = ['description','genres']
     df['combined_features']=combine_features(df)
     cm = CountVectorizer().fit_transform(df['combined_features'])

@@ -3,6 +3,7 @@
 		<h1 class="">Recommendations</h1>
 		<p>This is the recommendations page, here, we will be suggesting your future read!</p>
 		<h2>Based off of quiz results:</h2>
+		<p>{{ recs }}</p>
 		<h2>Based off of ratings</h2>
 	</div>
 </template>
@@ -54,13 +55,14 @@ export default {
 			});
 			let data = await response.json();
 			this.recs = data.recs
-			console.log(this.recs)
+			console.log("Recsss",this.recs)
 		}
 
 	},
 
 	async mounted() {
 		this.fetchUserData()
+		this.getRecommendation()
 	},
 
 };
