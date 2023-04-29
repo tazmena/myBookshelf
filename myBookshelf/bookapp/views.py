@@ -3,7 +3,7 @@ from bookapp.forms import SignUpForm, LogInForm
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
-from bookapp.models import User
+from bookapp.models import User, Book, UserPreference
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotAllowed, HttpRequest
 import numpy as np
@@ -71,11 +71,12 @@ def contentRec(request : HttpRequest, user_id : int) -> JsonResponse:
     df['combined_features']=combine_features(df)
     cm = CountVectorizer().fit_transform(df['combined_features'])
     cs = cosine_similarity(cm)
-    Title = df['title'][0]
+
+    Title = df['title'][5]
     book_id = df[df.title == Title]['id'].values[0]
     scores = list(enumerate(cs[book_id]))
     sortedScores = sorted(scores, key=lambda x:x[1], reverse = True) #highest score at the top
-    sortedScores = sortedScores[1:] #everything after the book itself
+    sortedScores = sortedScores[:5] + sortedScores[5+1:] #everything before and after the book itself
     k = 0
     recs = []
     print("Your 5 recommendations for " + Title + " are: \n")
@@ -94,3 +95,6 @@ def combine_features(data):
     features.append(str(data['description'][i])+data['genres'][i])
   return features
 
+def getBookData(request : HttpRequest) -> JsonResponse:
+    books = Book.objects.all()
+    return JsonResponse({'books': books.to_dict(),}, status=200)

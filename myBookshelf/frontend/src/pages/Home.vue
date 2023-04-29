@@ -1,7 +1,6 @@
 <template>
 	<div class="home">
 		<h1 class="">Home</h1>
-		<p>Welcome back to mybookshelf, {{ user.username }}.</p>
 		<p>This is the home page. Here, you can keep track of books you want to read, and rate books you've read.</p>
 		<h2>To read</h2>
 		<h2>Completed</h2>

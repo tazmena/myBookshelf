@@ -25,7 +25,7 @@ class User(AbstractUser):
 
 class UserPreference(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    likedbooks = models.CharField()
+    likedbooks = models.CharField(max_length=1000)
 
     def to_dict(self):
         return {
