@@ -9,5 +9,7 @@ urlpatterns = [
     path('logout/<int:user_id>', views.logOutUser, name='logout'),
     path('recommendations/<int:user_id>', views.contentRec, name='recommendations'),
     path('user/<int:user_id>', views.getUserObj, name="getUserObj"),
+    path('searchbooks', views.getBookData, name="getBookDAta"),
+
 
 ]

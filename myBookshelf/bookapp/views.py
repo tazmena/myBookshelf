@@ -79,7 +79,7 @@ def contentRec(request : HttpRequest, user_id : int) -> JsonResponse:
     sortedScores = sortedScores[:5] + sortedScores[5+1:] #everything before and after the book itself
     k = 0
     recs = []
-    print("Your 5 recommendations for " + Title + " are: \n")
+    #print("Your 5 recommendations for " + Title + " are: \n")
     for book in sortedScores:
         bookTitle = df[df.id == book[0]]['title'].values[0]
         recs.append(bookTitle)
@@ -96,5 +96,6 @@ def combine_features(data):
   return features
 
 def getBookData(request : HttpRequest) -> JsonResponse:
-    books = Book.objects.all()
-    return JsonResponse({'books': books.to_dict(),}, status=200)
+    if request.method == "GET":
+        allBooks = Book.objects.all() #queryset of all books in Book model
+        return JsonResponse({'books': [book.to_dict() for book in allBooks],}, status=200) #dictionary of all books and their info
