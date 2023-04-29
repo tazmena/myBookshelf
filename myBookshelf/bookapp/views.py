@@ -112,14 +112,12 @@ def addBook(request : HttpRequest, user_id : int, book_title : str) -> JsonRespo
             if chosenuser.username == currentuser.username:
                 item.likedbooks += (title+",")
                 item.save()
-            elif currentuser not in allusers:
-                userresult = UserPreference.objects.create()
-                userresult.user = currentuser
-                userresult.likedbooks += (title+",")
-                userresult.save()
-            else:
-                userresult = UserPreference.objects.create()
-                userresult.user = currentuser
-                userresult.likedbooks += (title+",")
-                userresult.save()
-        return JsonResponse({'success':"succss"},status=200)
+                print("hi")
+                return JsonResponse({'success':"succss"},status=200)
+            
+        userresult = UserPreference.objects.create()
+        userresult.user = currentuser
+        userresult.likedbooks += (title+",")
+        userresult.save()
+        print("hi2")
+        return JsonResponse({'success':"success"},status=200)
