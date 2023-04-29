@@ -10,7 +10,8 @@ urlpatterns = [
     path('recommendations/<int:user_id>', views.contentRec, name='recommendations'),
     path('user/<int:user_id>', views.getUserObj, name="getUserObj"),
     path('searchbooks', views.getBookData, name="getBookData"),
-    path('addBook/<int:user_id>/<str:book_title>', views.addBook, name="addBook"),
+    path('getBookId/<str:book_title>', views.getBookId, name="getBookId"),
+    path('addBook/<int:user_id>/<int:book_id>', views.addBook, name="addBook"),
 
 
 ]

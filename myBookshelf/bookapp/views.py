@@ -65,28 +65,53 @@ def logOutUser(request : HttpRequest, user_id : int) -> HttpResponseRedirect:
     del request.session["user_id"] #Reference - https://docs.djangoproject.com/en/4.2/topics/http/sessions/
     return HttpResponseRedirect('http://localhost:8000')
 
+def getBookIds(user_id): #to get the book id from the book name
+    user = User.objects.get(id=user_id)
+    userpreference = UserPreference.objects.get(User=user)
+    listofbooks = userpreference.likedbooks.split(',')
+    bookids = []
+    for bookname in listofbooks:
+        book = Book.objects.get(title=bookname)
+        bookids.append(book.id)
+    return bookids
+
 def contentRec(request : HttpRequest, user_id : int) -> JsonResponse:
+    user = User.objects.get(id=user_id)
+    userpreference = UserPreference.objects.get(user=user)
+    bookids = userpreference.likedbooks.split(',')
+    bookids2 = []
+    for i in range(len(bookids)):
+        if bookids[i] != "":
+            bookids2.append(int(bookids[i])-1)
+
+
     df = pd.read_csv('content.csv', encoding='unicode_escape')
     columns = ['description','genres']
     df['combined_features']=combine_features(df)
     cm = CountVectorizer().fit_transform(df['combined_features'])
     cs = cosine_similarity(cm)
 
-    Title = df['title'][5]
-    book_id = df[df.title == Title]['id'].values[0]
-    scores = list(enumerate(cs[book_id]))
-    sortedScores = sorted(scores, key=lambda x:x[1], reverse = True) #highest score at the top
-    sortedScores = sortedScores[:5] + sortedScores[5+1:] #everything before and after the book itself
-    k = 0
-    recs = []
-    #print("Your 5 recommendations for " + Title + " are: \n")
-    for book in sortedScores:
-        bookTitle = df[df.id == book[0]]['title'].values[0]
-        recs.append(bookTitle)
-        k+=1
-        if k >= 5:
-            break
-    return JsonResponse({'recs' : recs }, status=200)
+    #bookids = [1284-1,212,836,2475,1]
+    allrecs = []
+
+    for bookid in bookids2:
+        Title = df['title'][bookid]
+        book_id = df[df.title == Title]['id'].values[0]
+        scores = list(enumerate(cs[book_id]))
+        sortedScores = sorted(scores, key=lambda x:x[1], reverse = True) #highest score at the top
+        sortedScores = sortedScores[1:] #everything before and after the book itself
+        k = 0
+        recs = []
+        print("Your 5 recommendations for " + Title + " are: \n")
+        for book in sortedScores:
+            bookTitle = df[df.id == book[0]]['title'].values[0]
+            allrecs.append(bookTitle)
+            k+=1
+            if k >= 2:
+                break
+    print("Bookss",bookids2)
+    print(user_id)
+    return JsonResponse({'allrecs' : allrecs }, status=200)
 
 def combine_features(data):
   features = []
@@ -100,24 +125,30 @@ def getBookData(request : HttpRequest) -> JsonResponse:
         allBooks = Book.objects.all() #queryset of all books in Book model
         return JsonResponse({'books': [book.to_dict() for book in allBooks],}, status=200) #dictionary of all books and their info
 
-def addBook(request : HttpRequest, user_id : int, book_title : str) -> JsonResponse:
+def getBookId(request : HttpRequest, book_title : str) -> JsonResponse:
+    if request.method == "GET":
+        book = get_object_or_404(Book, title=book_title)
+        bookid = book.id
+        return JsonResponse({'bookId': bookid,}, status=200) 
+
+def addBook(request : HttpRequest, user_id : int, book_id : int) -> JsonResponse:
     if request.method == "GET":
         #book = get_object_or_404(Book, id=book_id)
         currentuser = get_object_or_404(User, id=user_id)
-        title = book_title
+        bookid = str(book_id)
         allusers = UserPreference.objects.all()
 
         for item in allusers:
             chosenuser = item.user
             if chosenuser.username == currentuser.username:
-                item.likedbooks += (title+",")
+                item.likedbooks += (bookid+",")
                 item.save()
                 print("hi")
                 return JsonResponse({'success':"succss"},status=200)
             
         userresult = UserPreference.objects.create()
         userresult.user = currentuser
-        userresult.likedbooks += (title+",")
+        userresult.likedbooks += (bookid+",")
         userresult.save()
         print("hi2")
         return JsonResponse({'success':"success"},status=200)

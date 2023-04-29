@@ -15,7 +15,7 @@
 			<div v-if="allBooks.length">
 				<div v-for="(book, index) in allBooks" :key="index"> <!-- Reference for search https://www.youtube.com/watch?v=0TMy-5srdlA-->
 					<div class="singlebook">
-						{{ index+1 }}. {{ book.title }} <button type="button" @click="addBook(book.title)">Add</button>
+						{{ index+1 }}. {{ book.title }} <button type="button" @click="getBookId(book.title)">Add</button>
 					</div>
 				</div>
 			</div>
@@ -43,6 +43,7 @@ export default {
 			user: null,
 			user_id: 0,
 			books: [],
+			bookId: 0,
 		};
 	},
 	computed: {
@@ -79,8 +80,20 @@ export default {
 			console.log(this.books)
 		},
 
-		async addBook(bookTitle){
-			let response = await fetch("http://localhost:8000/bookapp/addBook/"+this.user_id+"/"+bookTitle, {
+		async getBookId(bookTitle){
+			let response = await fetch("http://localhost:8000/bookapp/getBookId/"+bookTitle, {
+				credentials: "include",
+				mode: "cors",
+				referrerPolicy: "no-referrer",
+				method: "GET",
+			});
+			let data = await response.json();
+			this.bookId = data.bookId
+			this.addBook(this.bookId)
+		},
+
+		async addBook(bookId){
+			let response = await fetch("http://localhost:8000/bookapp/addBook/"+this.user_id+"/"+bookId, {
 				credentials: "include",
 				mode: "cors",
 				referrerPolicy: "no-referrer",

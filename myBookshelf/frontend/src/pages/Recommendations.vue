@@ -34,6 +34,7 @@ export default {
 			this.user_id = data.user_id
 			console.log("Recommendations",this.user_id)
 			this.getUserObj()
+			this.getRecommendation()
 		},
 		async getUserObj(){
 			let response = await fetch("http://localhost:8000/bookapp/user/"+this.user_id, {
@@ -54,7 +55,7 @@ export default {
 				method: "GET",
 			});
 			let data = await response.json();
-			this.recs = data.recs
+			this.recs = data.allrecs
 			console.log("Recsss",this.recs)
 		}
 
@@ -62,7 +63,6 @@ export default {
 
 	async mounted() {
 		this.fetchUserData()
-		this.getRecommendation()
 	},
 
 };
