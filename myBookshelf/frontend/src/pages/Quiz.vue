@@ -13,7 +13,7 @@
 
 
 
-		<div>
+		<div v-if="searchinput.length">
 			<div v-if="allBooks.length">
 				<div v-for="(book, index) in allBooks" :key="index"> <!-- Reference for search https://www.youtube.com/watch?v=0TMy-5srdlA-->
 					<div class="singlebook">
@@ -24,6 +24,10 @@
 
 			<div v-else>That book is not found, please search something else.</div>
 
+		</div>
+
+		<div v-else>
+			<p></p>
 		</div>
 
 	</div>
