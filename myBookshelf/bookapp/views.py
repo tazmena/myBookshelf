@@ -103,10 +103,23 @@ def getBookData(request : HttpRequest) -> JsonResponse:
 def addBook(request : HttpRequest, user_id : int, book_title : str) -> JsonResponse:
     if request.method == "GET":
         #book = get_object_or_404(Book, id=book_id)
-        user = get_object_or_404(User, id=user_id)
+        currentuser = get_object_or_404(User, id=user_id)
         title = book_title
-        userresult = UserPreference.objects.create()
-        userresult.user = user
-        userresult.likedbooks += (title+",")
-        userresult.save()
+        allusers = UserPreference.objects.all()
+
+        for item in allusers:
+            chosenuser = item.user
+            if chosenuser.username == currentuser.username:
+                item.likedbooks += (title+",")
+                item.save()
+            elif currentuser not in allusers:
+                userresult = UserPreference.objects.create()
+                userresult.user = currentuser
+                userresult.likedbooks += (title+",")
+                userresult.save()
+            else:
+                userresult = UserPreference.objects.create()
+                userresult.user = currentuser
+                userresult.likedbooks += (title+",")
+                userresult.save()
         return JsonResponse({'success':"succss"},status=200)
