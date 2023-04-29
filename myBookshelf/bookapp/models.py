@@ -24,8 +24,11 @@ class User(AbstractUser):
             }
 
 class UserPreference(models.Model):
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     likedbooks = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return self.user.username
 
     def to_dict(self):
         return {

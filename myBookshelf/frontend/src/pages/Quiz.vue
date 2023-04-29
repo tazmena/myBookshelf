@@ -11,13 +11,11 @@
         	</div>
 		</div>
 
-
-
 		<div v-if="searchinput.length">
 			<div v-if="allBooks.length">
 				<div v-for="(book, index) in allBooks" :key="index"> <!-- Reference for search https://www.youtube.com/watch?v=0TMy-5srdlA-->
 					<div class="singlebook">
-						{{ index+1 }}. {{ book.title }} <button type="button">Add</button>
+						{{ index+1 }}. {{ book.title }} <button type="button" @click="addBook(book.title)">Add</button>
 					</div>
 				</div>
 			</div>
@@ -80,6 +78,16 @@ export default {
 			this.books = data.books
 			console.log(this.books)
 		},
+
+		async addBook(bookTitle){
+			let response = await fetch("http://localhost:8000/bookapp/addBook/"+this.user_id+"/"+bookTitle, {
+				credentials: "include",
+				mode: "cors",
+				referrerPolicy: "no-referrer",
+				method: "GET",
+			});
+			let data = await response.json();
+		}
 	},
 
 	async mounted() {

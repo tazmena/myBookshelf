@@ -99,3 +99,14 @@ def getBookData(request : HttpRequest) -> JsonResponse:
     if request.method == "GET":
         allBooks = Book.objects.all() #queryset of all books in Book model
         return JsonResponse({'books': [book.to_dict() for book in allBooks],}, status=200) #dictionary of all books and their info
+
+def addBook(request : HttpRequest, user_id : int, book_title : str) -> JsonResponse:
+    if request.method == "GET":
+        #book = get_object_or_404(Book, id=book_id)
+        user = get_object_or_404(User, id=user_id)
+        title = book_title
+        userresult = UserPreference.objects.create()
+        userresult.user = user
+        userresult.likedbooks += (title+",")
+        userresult.save()
+        return JsonResponse({'success':"succss"},status=200)
