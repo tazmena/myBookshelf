@@ -5,10 +5,27 @@
         <p>To start off, please search using the search bar below.</p>
         <p>You can select a total of 5 books.</p>
 
-        <div class="search">
-            <input type="search" placeholder="Search here..." />
-            <button class="searchbutton" type="button">Search</button>
-        </div>
+		<div>
+			<div class="search">
+            	<input type="search" placeholder="Search here..." v-model="searchinput" />
+        	</div>
+		</div>
+
+
+
+		<div>
+			<div v-if="allBooks.length">
+				<div v-for="(book, index) in allBooks" :key="index"> <!-- Reference for search https://www.youtube.com/watch?v=0TMy-5srdlA-->
+					<div class="singlebook">
+						{{ index+1 }}. {{ book.title }} <button type="button">Add</button>
+					</div>
+				</div>
+			</div>
+
+			<div v-else>That book is not found, please search something else.</div>
+
+		</div>
+
 	</div>
 
 	
@@ -20,12 +37,19 @@ import router from "../router";
 export default {
 	data() {
 		return {
+			searchinput: '',
 			user: null,
 			user_id: 0,
 			books: [],
 		};
 	},
 	computed: {
+		allBooks(){
+			if (this.searchinput.trim().length > 0){
+				return this.books.filter((book) => book.title.toLowerCase().includes(this.searchinput.trim().toLowerCase()))
+			}
+			return this.books
+		}
 	},
 	methods: {
 		async fetchUserData(){
@@ -51,8 +75,7 @@ export default {
 			let data = await response.json();
 			this.books = data.books
 			console.log(this.books)
-		}
-
+		},
 	},
 
 	async mounted() {
@@ -81,13 +104,27 @@ body{
     text-align: left;
 }
 
-.searchbutton{
-    color: white;
-    margin-left: 1em;
-}
-
 .search{
     padding-bottom: 1em;
+}
+
+.search input{
+	width: 53em;
+	height: 3em;
+	background-color: white;
+	color: #311f1c;
+}
+
+.singlebook{
+	color: rgb(255, 255, 255);
+	background-color: #736056;
+	margin-top: 2em;
+	padding: 1em;
+	border-radius: 3em;
+}
+
+button {
+	background-color: #311f1c;
 }
 
 </style>
