@@ -3,8 +3,20 @@
 		<h1 class="">Recommendations</h1>
 		<p>This is the recommendations page, here, we will be suggesting your future read!</p>
 		<h2>Based off of quiz results:</h2>
-		<p>{{ recs }}</p>
-		<h2>Based off of ratings</h2>
+		<div class="recommendations">
+			<div v-if="recs.length">
+				<div v-for="(recommendation, index) in recs" :key="index"> <!-- Reference for search https://www.youtube.com/watch?v=0TMy-5srdlA-->
+					<div class="singleRec">
+							<p>{{ index+1 }}. {{ recommendation.title }}</p>
+							<p>Author: {{ recommendation.author }}</p>
+							<p>Rating: {{ recommendation.rating }}/5</p>
+							<p>Genres: {{ recommendation.genres }}</p>
+					</div>
+				</div>
+			</div>
+
+			<div v-else>There are no recommendations yet, please take the quiz!</div>
+		</div>
 	</div>
 </template>
 
@@ -84,5 +96,16 @@ body{
     padding-left: 10em;
     padding-right: 30em;
     text-align: left;
+}
+
+.singleRec{
+	color: rgb(255, 255, 255);
+	background-color: #736056;
+	margin-top: 2em;
+	padding: 1em;
+	border-radius: 3em;}
+
+.singleRec p{
+	color: white;
 }
 </style>

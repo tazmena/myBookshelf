@@ -111,7 +111,10 @@ def contentRec(request : HttpRequest, user_id : int) -> JsonResponse:
                 break
     print("Bookss",bookids2)
     print(user_id)
-    return JsonResponse({'allrecs' : allrecs }, status=200)
+    allrecsobj = [] #recommendations stored as Book object
+    for i in range(len(allrecs)):
+        allrecsobj.append(get_object_or_404(Book, title=allrecs[i]))
+    return JsonResponse({'allrecs' : [rec.to_dict() for rec in allrecsobj]}, status=200)
 
 def combine_features(data):
   features = []
