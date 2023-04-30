@@ -151,7 +151,26 @@ def getToRead(request : HttpRequest, user_id : int) -> JsonResponse:
                     allbooksobj.append(get_object_or_404(Book, id=allbooks[k]))
                 return JsonResponse({'userbooks': [book.to_dict() for book in allbooksobj]}, status=200)
             else:
-                return JsonResponse({'userbooks': ''}, status=200)     
+                return JsonResponse({'userbooks': ''}, status=200)
+
+def getCompleted(request : HttpRequest, user_id : int) -> JsonResponse:
+    if request.method == "GET":
+        user = get_object_or_404(User, id=user_id)
+        allusers = UserToRead.objects.all()
+        for item in allusers:
+            chosenuser = item.user
+            if chosenuser.id == user.id:
+                userbooks = item.bookscompleted
+                books = userbooks.split(',')
+                allbooks =[]
+                allbooksobj = []
+                for i in range(len(books)-1):
+                    allbooks.append(books[i])
+                for k in range(len(allbooks)):
+                    allbooksobj.append(get_object_or_404(Book, id=allbooks[k]))
+                return JsonResponse({'userbooks': [book.to_dict() for book in allbooksobj]}, status=200)
+            else:
+                return JsonResponse({'userbooks': ''}, status=200)      
 
 def addBook(request : HttpRequest, user_id : int, book_id : int) -> JsonResponse:
     if request.method == "GET":
@@ -197,3 +216,21 @@ def addBookToRead(request : HttpRequest, user_id : int, book_id : int) -> JsonRe
         print("hi2")
         return JsonResponse({'success':"success"},status=200)
     
+def moveToComplete(request : HttpRequest, user_id : int, book_id : int) -> JsonResponse:
+    if request.method == "GET":
+        currentuser = get_object_or_404(User, id=user_id)
+        bookid = str(book_id)
+        alltrackedbooks = UserToRead.objects.all()
+
+        for item in alltrackedbooks:
+            chosenuser = item.user
+            if chosenuser.username == currentuser.username:
+                toreadbooks = item.bookstoread.split(",")
+                for i in range(len(toreadbooks)-1):
+                    if str(toreadbooks[i]) == bookid:
+                        item.bookscompleted += (bookid+",")
+                        #stringtoreplace = bookid+","
+                        newbooks = item.bookstoread.replace((bookid+","),"")
+                        item.bookstoread = newbooks
+                        item.save()
+        return JsonResponse({'success':"success"},status=200)

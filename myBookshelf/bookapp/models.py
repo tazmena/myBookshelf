@@ -26,6 +26,7 @@ class User(AbstractUser):
 class UserToRead(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     bookstoread = models.CharField(max_length=1000)
+    bookscompleted = models.CharField(max_length=1000, default='')
 
     def __str__(self):
         return self.user.username
@@ -34,6 +35,7 @@ class UserToRead(models.Model):
         return {
             'user': self.user,
             'bookstoread' : self.bookstoread,
+            'bookscompleted' : self.bookscompleted
             }
 
 class UserPreference(models.Model):
