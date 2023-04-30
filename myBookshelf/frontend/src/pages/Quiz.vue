@@ -100,6 +100,7 @@ export default {
 				method: "GET",
 			});
 			let data = await response.json();
+			alert("Book has been added.");
 		}
 	},
 

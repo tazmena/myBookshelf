@@ -12,6 +12,8 @@ urlpatterns = [
     path('searchbooks', views.getBookData, name="getBookData"),
     path('getBookId/<str:book_title>', views.getBookId, name="getBookId"),
     path('addBook/<int:user_id>/<int:book_id>', views.addBook, name="addBook"),
+    path('addBookToRead/<int:user_id>/<int:book_id>', views.addBookToRead, name="addBookToRead"),
+    path('getToRead/<int:user_id>', views.getToRead, name="getToRead"),
 
 
 ]

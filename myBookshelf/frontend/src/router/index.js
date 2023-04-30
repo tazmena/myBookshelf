@@ -12,9 +12,9 @@ const routes = [
       component: () => import('../pages/Recommendations.vue')
     },
     {
-        path: '/profile',
-        name: 'Profile',
-        component: () => import('../pages/Profile.vue')
+        path: '/search',
+        name: 'Search',
+        component: () => import('../pages/Search.vue')
     },
     {
       path: '/quiz',

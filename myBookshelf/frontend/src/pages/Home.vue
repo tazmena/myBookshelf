@@ -3,6 +3,16 @@
 		<h1 class="">Home</h1>
 		<p>This is the home page. Here, you can keep track of books you want to read, and rate books you've read.</p>
 		<h2>To read</h2>
+		<div v-if="toread.length">
+				<div v-for="(book, index) in toread" :key="index"> <!-- Reference for search https://www.youtube.com/watch?v=0TMy-5srdlA-->
+					<div class="singlebook">
+						{{ index+1 }}. {{ book.title }}
+					</div>
+				</div>
+			</div>
+
+		<div v-else>There are no books saved. Start adding books from the search page.</div>
+
 		<h2>Completed</h2>
 	</div>
 </template>
@@ -15,6 +25,9 @@ export default {
 		return {
 			user: null,
 			user_id: 0,
+			toread: [],
+			toreadbooks: [],
+			foundbook: null,
 		};
 	},
 	computed: {
@@ -43,6 +56,19 @@ export default {
 			let data = await response.json();
 			this.user = data.user
 			console.log("Home",this.user)
+			this.getToRead()
+		},
+
+		async getToRead(){
+			let response = await fetch("http://localhost:8000/bookapp/getToRead/"+this.user_id, {
+				credentials: "include",
+				mode: "cors",
+				referrerPolicy: "no-referrer",
+				method: "GET",
+			});
+			let data = await response.json();
+			this.toread = data.userbooks
+			console.log("book objects",this.toread)
 		},
 
 	},

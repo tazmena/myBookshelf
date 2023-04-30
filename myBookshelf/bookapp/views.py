@@ -3,7 +3,7 @@ from bookapp.forms import SignUpForm, LogInForm
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
-from bookapp.models import User, Book, UserPreference
+from bookapp.models import User, Book, UserPreference, UserToRead
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotAllowed, HttpRequest
 import numpy as np
@@ -132,7 +132,26 @@ def getBookId(request : HttpRequest, book_title : str) -> JsonResponse:
     if request.method == "GET":
         book = get_object_or_404(Book, title=book_title)
         bookid = book.id
-        return JsonResponse({'bookId': bookid,}, status=200) 
+        return JsonResponse({'bookId': bookid,}, status=200)  
+    
+def getToRead(request : HttpRequest, user_id : int) -> JsonResponse:
+    if request.method == "GET":
+        user = get_object_or_404(User, id=user_id)
+        allusers = UserToRead.objects.all()
+        for item in allusers:
+            chosenuser = item.user
+            if chosenuser.id == user.id:
+                userbooks = item.bookstoread
+                books = userbooks.split(',')
+                allbooks =[]
+                allbooksobj = []
+                for i in range(len(books)-1):
+                    allbooks.append(books[i])
+                for k in range(len(allbooks)):
+                    allbooksobj.append(get_object_or_404(Book, id=allbooks[k]))
+                return JsonResponse({'userbooks': [book.to_dict() for book in allbooksobj]}, status=200)
+            else:
+                return JsonResponse({'userbooks': ''}, status=200)     
 
 def addBook(request : HttpRequest, user_id : int, book_id : int) -> JsonResponse:
     if request.method == "GET":
@@ -155,3 +174,26 @@ def addBook(request : HttpRequest, user_id : int, book_id : int) -> JsonResponse
         userresult.save()
         print("hi2")
         return JsonResponse({'success':"success"},status=200)
+    
+def addBookToRead(request : HttpRequest, user_id : int, book_id : int) -> JsonResponse:
+    if request.method == "GET":
+        #book = get_object_or_404(Book, id=book_id)
+        currentuser = get_object_or_404(User, id=user_id)
+        bookid = str(book_id)
+        allusers = UserToRead.objects.all()
+
+        for item in allusers:
+            chosenuser = item.user
+            if chosenuser.username == currentuser.username:
+                item.bookstoread += (bookid+",")
+                item.save()
+                print("hi")
+                return JsonResponse({'success':"succss"},status=200)
+            
+        userresult = UserToRead.objects.create()
+        userresult.user = currentuser
+        userresult.bookstoread += (bookid+",")
+        userresult.save()
+        print("hi2")
+        return JsonResponse({'success':"success"},status=200)
+    

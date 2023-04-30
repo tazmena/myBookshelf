@@ -22,6 +22,19 @@ class User(AbstractUser):
             'last_name': self.last_name,
             'newuser': self.newuser
             }
+    
+class UserToRead(models.Model):
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    bookstoread = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return self.user.username
+
+    def to_dict(self):
+        return {
+            'user': self.user,
+            'bookstoread' : self.bookstoread,
+            }
 
 class UserPreference(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)

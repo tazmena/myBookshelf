@@ -5,7 +5,9 @@ from django.contrib import admin
 from .models import User
 from .models import Book
 from .models import UserPreference
+from .models import UserToRead
 
 admin.site.register(Book)
 admin.site.register(User)
 admin.site.register(UserPreference)
+admin.site.register(UserToRead)

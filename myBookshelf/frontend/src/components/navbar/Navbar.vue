@@ -61,7 +61,7 @@ export default {
 
         <NavbarLink to="/" icon="fas fa-solid fa-house">Home</NavbarLink>
 		<NavbarLink to="/recommendations" icon="fas fa-solid fa-book-open">Recommendations</NavbarLink>
-		<NavbarLink to="/profile" icon="fas fa-solid fa-circle-user">Profile</NavbarLink>
+		<NavbarLink to="/search" icon="fas fa-solid fa-magnifying-glass">Search</NavbarLink>
         <NavbarLink to="/quiz" icon="fas fa-solid fa-clipboard-question">Quiz</NavbarLink>
         <button id="logout" type="button" @click="logUserOut">
             <span v-if="collapsed">
