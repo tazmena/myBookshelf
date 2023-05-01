@@ -16,7 +16,7 @@ urlpatterns = [
     path('getToRead/<int:user_id>', views.getToRead, name="getToRead"),
     path('getCompleted/<int:user_id>', views.getCompleted, name="getCompleted"),
     path('moveToComplete/<int:user_id>/<int:book_id>', views.moveToComplete, name="moveToComplete"),
-    
+    path('resetQuiz', views.resetQuiz, name="resetQuiz"),
 
 
 ]

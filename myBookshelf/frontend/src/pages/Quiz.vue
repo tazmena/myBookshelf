@@ -3,13 +3,18 @@
 		<h1>Quiz</h1>
         <p>This is the quiz page. Here, you can select your favourite books so that you can get better recommendations! </p>
         <p>To start off, please search using the search bar below.</p>
-        <p>You can select a total of 5 books.</p>
+        <p>We recommend you select a total of 5 books.</p>
 
 		<div>
 			<div class="search">
             	<input type="search" placeholder="Search here..." v-model="searchinput" />
         	</div>
 		</div>
+
+		<div class="reset">
+			<button type="button" @click="retakeQuiz">Retake</button>
+		</div>
+		<p>Clicking the retake quiz will reset your previous results.</p>
 
 		<div v-if="searchinput.length">
 			<div v-if="allBooks.length">
@@ -101,6 +106,17 @@ export default {
 			});
 			let data = await response.json();
 			alert("Book has been added.");
+		},
+
+		async retakeQuiz(){
+			let response = await fetch("http://localhost:8000/bookapp/resetQuiz", {
+				credentials: "include",
+				mode: "cors",
+				method: "DELETE",
+				body: JSON.stringify({ user_id: this.user_id }),
+			});
+			let data = await response.json();
+			alert("Quiz has been reset!")
 		}
 	},
 

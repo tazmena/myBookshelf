@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
+import json
 
 
 def loginUser(request: HttpRequest) -> JsonResponse: #Code of these 3 methods written by myself for web programming module
@@ -234,3 +235,11 @@ def moveToComplete(request : HttpRequest, user_id : int, book_id : int) -> JsonR
                         item.bookstoread = newbooks
                         item.save()
         return JsonResponse({'success':"success"},status=200)
+
+@csrf_exempt    
+def resetQuiz(request: HttpRequest) -> JsonResponse:
+    res = json.loads(request.body.decode('utf-8'))
+    user = get_object_or_404(User, id=res['user_id'])
+    get_object_or_404(UserPreference, user=user).delete()
+    return JsonResponse({'deletesuccess':'deletesuccess'},status=200)
+
