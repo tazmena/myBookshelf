@@ -3,9 +3,14 @@ from bookapp.forms import SignUpForm, LogInForm
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
-from bookapp.models import User
-from django.shortcuts import render
+from bookapp.models import User, Book, UserPreference, UserToRead, Rating
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotAllowed, HttpRequest
+import numpy as np
+import pandas as pd
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import CountVectorizer
+import json
 
 
 def loginUser(request: HttpRequest) -> JsonResponse: #Code of these 3 methods written by myself for web programming module
@@ -48,11 +53,225 @@ def session_api(request : HttpRequest) -> JsonResponse:
     form = LogInForm()
     if request.method == "GET":
         try:
-            return JsonResponse( { 'user_id' : request.session.__getitem__("_auth_user_id") } , safe=False )
+            return JsonResponse( { 'user_id' : request.session.__getitem__("_auth_user_id") } , safe=False ) #REference - https://stackoverflow.com/questions/8000040/how-to-get-logged-in-users-uid-from-session-in-django
         except:
             return HttpResponseNotAllowed
         
+def getUserObj(request : HttpRequest, user_id : int) -> JsonResponse:
+    userobj = get_object_or_404(User, id=user_id)
+    return JsonResponse({'user': userobj.to_dict(),}, status=200)
+        
 def logOutUser(request : HttpRequest, user_id : int) -> HttpResponseRedirect:
-    logout(request)
-    del request.session
-    HttpResponseRedirect('http://localhost:8000')
+    #logout(request)
+    del request.session["user_id"] #Reference - https://docs.djangoproject.com/en/4.2/topics/http/sessions/
+    return HttpResponseRedirect('http://localhost:8000')
+
+def getBookIds(user_id): #to get the book id from the book name
+    user = User.objects.get(id=user_id)
+    userpreference = UserPreference.objects.get(User=user)
+    listofbooks = userpreference.likedbooks.split(',')
+    bookids = []
+    for bookname in listofbooks:
+        book = Book.objects.get(title=bookname)
+        bookids.append(book.id)
+    return bookids
+
+def contentRec(request : HttpRequest, user_id : int) -> JsonResponse:
+    user = User.objects.get(id=user_id)
+    userpreference = UserPreference.objects.get(user=user)
+    bookids = userpreference.likedbooks.split(',')
+    bookids2 = []
+    for i in range(len(bookids)):
+        if bookids[i] != "":
+            bookids2.append(int(bookids[i])-1)
+
+
+    df = pd.read_csv('content.csv', encoding='unicode_escape')
+    columns = ['description','genres']
+    df['combined_features']=combine_features(df)
+    cm = CountVectorizer().fit_transform(df['combined_features'])
+    cs = cosine_similarity(cm)
+
+    #bookids = [1284-1,212,836,2475,1]
+    allrecs = []
+
+    for bookid in bookids2:
+        Title = df['title'][bookid]
+        book_id = df[df.title == Title]['id'].values[0]
+        scores = list(enumerate(cs[book_id]))
+        sortedScores = sorted(scores, key=lambda x:x[1], reverse = True) #highest score at the top
+        sortedScores = sortedScores[1:] #everything before and after the book itself
+        k = 0
+        recs = []
+        print("Your 5 recommendations for " + Title + " are: \n")
+        for book in sortedScores:
+            bookTitle = df[df.id == book[0]]['title'].values[0]
+            allrecs.append(bookTitle)
+            k+=1
+            if k >= 2:
+                break
+    print("Bookss",bookids2)
+    print(user_id)
+    allrecsobj = [] #recommendations stored as Book object
+    for i in range(len(allrecs)):
+        allrecsobj.append(get_object_or_404(Book, title=allrecs[i]))
+    return JsonResponse({'allrecs' : [rec.to_dict() for rec in allrecsobj]}, status=200)
+
+def combine_features(data):
+  features = []
+  for i in range(0, data.shape[0]):
+    print(data.shape[0])
+    features.append(str(data['description'][i])+data['genres'][i])
+  return features
+
+def getBookData(request : HttpRequest) -> JsonResponse:
+    if request.method == "GET":
+        allBooks = Book.objects.all() #queryset of all books in Book model
+        return JsonResponse({'books': [book.to_dict() for book in allBooks],}, status=200) #dictionary of all books and their info
+
+def getBookId(request : HttpRequest, book_title : str) -> JsonResponse:
+    if request.method == "GET":
+        book = get_object_or_404(Book, title=book_title)
+        bookid = book.id
+        return JsonResponse({'bookId': bookid,}, status=200)  
+    
+def getToRead(request : HttpRequest, user_id : int) -> JsonResponse:
+    if request.method == "GET":
+        user = get_object_or_404(User, id=user_id)
+        allusers = UserToRead.objects.all()
+        for item in allusers:
+            chosenuser = item.user
+            if chosenuser.id == user.id:
+                userbooks = item.bookstoread
+                books = userbooks.split(',')
+                allbooks =[]
+                allbooksobj = []
+                for i in range(len(books)-1):
+                    allbooks.append(books[i])
+                for k in range(len(allbooks)):
+                    allbooksobj.append(get_object_or_404(Book, id=allbooks[k]))
+                return JsonResponse({'userbooks': [book.to_dict() for book in allbooksobj]}, status=200)
+        return JsonResponse({'userbooks': ''}, status=200)
+
+def getCompleted(request : HttpRequest, user_id : int) -> JsonResponse:
+    if request.method == "GET":
+        user = get_object_or_404(User, id=user_id)
+        allusers = UserToRead.objects.all()
+        for item in allusers:
+            chosenuser = item.user
+            if chosenuser.id == user.id:
+                userbooks = item.bookscompleted
+                books = userbooks.split(',')
+                allbooks =[]
+                allbooksobj = []
+                for i in range(len(books)-1):
+                    allbooks.append(books[i])
+                for k in range(len(allbooks)):
+                    allbooksobj.append(get_object_or_404(Book, id=allbooks[k]))
+                return JsonResponse({'userbooks': [book.to_dict() for book in allbooksobj]}, status=200)
+        return JsonResponse({'userbooks': ''}, status=200)      
+
+def addBook(request : HttpRequest, user_id : int, book_id : int) -> JsonResponse:
+    if request.method == "GET":
+        #book = get_object_or_404(Book, id=book_id)
+        currentuser = get_object_or_404(User, id=user_id)
+        bookid = str(book_id)
+        allusers = UserPreference.objects.all()
+
+        for item in allusers:
+            chosenuser = item.user
+            if chosenuser.username == currentuser.username:
+                item.likedbooks += (bookid+",")
+                item.save()
+                print("hi")
+                return JsonResponse({'success':"succss"},status=200)
+            
+        userresult = UserPreference.objects.create()
+        userresult.user = currentuser
+        userresult.likedbooks += (bookid+",")
+        userresult.save()
+        print("hi2")
+        return JsonResponse({'success':"success"},status=200)
+    
+def addBookToRead(request : HttpRequest, user_id : int, book_id : int) -> JsonResponse:
+    if request.method == "GET":
+        #book = get_object_or_404(Book, id=book_id)
+        currentuser = get_object_or_404(User, id=user_id)
+        bookid = str(book_id)
+        allusers = UserToRead.objects.all()
+
+        for item in allusers:
+            chosenuser = item.user
+            if chosenuser.username == currentuser.username:
+                item.bookstoread += (bookid+",")
+                item.save()
+                print("hi")
+                return JsonResponse({'success':"succss"},status=200)
+            
+        userresult = UserToRead.objects.create()
+        userresult.user = currentuser
+        userresult.bookstoread += (bookid+",")
+        userresult.save()
+        print("hi2")
+        return JsonResponse({'success':"success"},status=200)
+    
+def moveToComplete(request : HttpRequest, user_id : int, book_id : int) -> JsonResponse:
+    if request.method == "GET":
+        currentuser = get_object_or_404(User, id=user_id)
+        bookid = str(book_id)
+        alltrackedbooks = UserToRead.objects.all()
+
+        for item in alltrackedbooks:
+            chosenuser = item.user
+            if chosenuser.username == currentuser.username:
+                toreadbooks = item.bookstoread.split(",")
+                for i in range(len(toreadbooks)-1):
+                    if str(toreadbooks[i]) == bookid:
+                        item.bookscompleted += (bookid+",")
+                        #stringtoreplace = bookid+","
+                        newbooks = item.bookstoread.replace((bookid+","),"")
+                        item.bookstoread = newbooks
+                        item.save()
+        return JsonResponse({'success':"success"},status=200)
+
+@csrf_exempt    
+def resetQuiz(request: HttpRequest) -> JsonResponse:
+    res = json.loads(request.body.decode('utf-8'))
+    user = get_object_or_404(User, id=res['user_id'])
+    get_object_or_404(UserPreference, user=user).delete()
+    return JsonResponse({'deletesuccess':'deletesuccess'},status=200)
+
+def getQuizResults(request:HttpRequest, user_id:int) -> JsonResponse:
+    user = get_object_or_404(User, id=user_id)
+    preference = get_object_or_404(UserPreference, user=user)
+    books = preference.likedbooks.split(",")
+    booksobj = []
+
+    for i in (range(len(books)-1)):
+        booksobj.append(get_object_or_404(Book, id=books[i]))
+    return JsonResponse({'books':[book.to_dict() for book in booksobj]},status=200)
+
+@csrf_exempt    
+def saveRating(request: HttpRequest) -> JsonResponse:
+    res = json.loads(request.body.decode('utf-8'))
+    currentuser = get_object_or_404(User, id=res['user_id'])
+    book = get_object_or_404(Book, title=res['bookTitle'])
+    bookid = str(book.id)
+    ratingval = str(res['ratingVal'])
+    allusers = Rating.objects.all()
+
+    for item in allusers:
+        chosenuser = item.user
+        if chosenuser.username == currentuser.username:
+            item.books += (bookid+",")
+            item.ratings += (ratingval+",")
+            item.save()
+            return JsonResponse({'success':"succss"},status=200)
+            
+    userresult = Rating.objects.create()
+    userresult.user = currentuser
+    userresult.books += (bookid+",")
+    userresult.ratings += (ratingval+",")
+    userresult.save()
+    return JsonResponse({'success':"success"},status=200)
+
