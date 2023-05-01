@@ -3,7 +3,7 @@ from bookapp.forms import SignUpForm, LogInForm
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
-from bookapp.models import User, Book, UserPreference, UserToRead
+from bookapp.models import User, Book, UserPreference, UserToRead, Rating
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotAllowed, HttpRequest
 import numpy as np
@@ -250,4 +250,28 @@ def getQuizResults(request:HttpRequest, user_id:int) -> JsonResponse:
     for i in (range(len(books)-1)):
         booksobj.append(get_object_or_404(Book, id=books[i]))
     return JsonResponse({'books':[book.to_dict() for book in booksobj]},status=200)
+
+@csrf_exempt    
+def saveRating(request: HttpRequest) -> JsonResponse:
+    res = json.loads(request.body.decode('utf-8'))
+    currentuser = get_object_or_404(User, id=res['user_id'])
+    book = get_object_or_404(Book, title=res['bookTitle'])
+    bookid = str(book.id)
+    ratingval = str(res['ratingVal'])
+    allusers = Rating.objects.all()
+
+    for item in allusers:
+        chosenuser = item.user
+        if chosenuser.username == currentuser.username:
+            item.books += (bookid+",")
+            item.ratings += (ratingval+",")
+            item.save()
+            return JsonResponse({'success':"succss"},status=200)
+            
+    userresult = Rating.objects.create()
+    userresult.user = currentuser
+    userresult.books += (bookid+",")
+    userresult.ratings += (ratingval+",")
+    userresult.save()
+    return JsonResponse({'success':"success"},status=200)
 

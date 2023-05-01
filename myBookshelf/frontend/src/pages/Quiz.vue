@@ -156,6 +156,7 @@ body{
 
 .quiz h1, .quiz h2, .quiz p {
 	color: black;
+	margin-bottom: 1em;
 }
 
 .quiz{
@@ -165,6 +166,8 @@ body{
     padding-left: 10em;
     padding-right: 10em;
     text-align: left;
+	border-radius: 5em;
+
 }
 
 .search{

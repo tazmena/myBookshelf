@@ -87,6 +87,7 @@ body{
 
 .recommendation h1, .recommendation h2, .recommendation p {
 	color: black;
+	margin-bottom: 1em;
 }
 
 .recommendation{
@@ -96,6 +97,7 @@ body{
     padding-left: 10em;
     padding-right: 30em;
     text-align: left;
+	border-radius: 5em;
 }
 
 .singleRec{

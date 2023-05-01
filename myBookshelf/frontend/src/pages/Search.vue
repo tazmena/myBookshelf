@@ -118,6 +118,7 @@ body{
 
 .searchPage h1, .searchPage h2, .searchPage p {
 	color: black;
+	margin-bottom: 1em;
 }
 
 .searchPage{
@@ -127,6 +128,7 @@ body{
     padding-left: 10em;
     padding-right: 10em;
     text-align: left;
+	border-radius: 5em;
 }
 
 .search{

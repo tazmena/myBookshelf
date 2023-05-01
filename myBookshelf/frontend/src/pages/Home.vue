@@ -18,6 +18,18 @@
 				<div v-for="(book, index) in completed" :key="index"> <!-- Reference for search https://www.youtube.com/watch?v=0TMy-5srdlA-->
 					<div class="singlebookcompleted">
 						{{ index+1 }}. {{ book.title }}
+						<div class="rate">
+							<input type="radio" id="star5" :name="book.title"  @click="this.saveRating(5, index)"/>
+							<label for="star5" title="text">5 stars</label>
+							<input type="radio" id="star4" :name="book.title"  @click="this.saveRating(4, index)"/>
+							<label for="star4" title="text">4 stars</label>
+							<input type="radio" id="star3" :name="book.title"  @click="this.saveRating(3, index)"/>
+							<label for="star3" title="text">3 stars</label>
+							<input type="radio" id="star2" :name="book.title"  @click="this.saveRating(2, index)"/>
+							<label for="star2" title="text">2 stars</label>
+							<input type="radio" id="star1" :name="book.title"  @click="this.saveRating(1, index)"/>
+							<label for="star1" title="text">1 star</label>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -38,6 +50,7 @@ export default {
 			toreadbooks: [],
 			completed: [],
 			bookId: 0,
+			currentBook: '',
 		};
 	},
 	computed: {
@@ -127,6 +140,21 @@ export default {
 				method: "GET",
 			});
 			let data = await response.json();
+		},
+
+		async saveRating(value, bookIndex){
+			console.log("Rating changed")
+			console.log(this.completed[bookIndex].title)
+            //let valueOfrate = document.querySelector('input[name="index"]:checked').value; //Reference: https://stackoverflow.com/questions/9618504/how-to-get-the-selected-radio-button-s-value
+			let response = await fetch("http://localhost:8000/bookapp/saveRating", {
+				credentials: "include",
+				mode: "cors",
+				referrerPolicy: "no-referrer",
+				method: "POST",
+				body: JSON.stringify({ user_id: this.user_id, bookTitle: this.completed[bookIndex].title, ratingVal: value}),
+			});
+			let data = await response.json();
+			alert("Rating has been saved.")
 		}
 
 	},
@@ -145,6 +173,7 @@ body{
 
 .home h1, .home h2, .home p {
 	color: black;
+	margin-bottom: 1em;
 }
 
 .home{
@@ -154,6 +183,7 @@ body{
     padding-left: 10em;
     padding-right: 10em;
     text-align: left;
+	border-radius: 5em;
 }
 
 .singlebook, .singlebookcompleted{
@@ -162,5 +192,45 @@ body{
 	margin-top: 2em;
 	padding: 1em;
 	border-radius: 3em;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+}
+.rate {
+    float: right;
+    height: 46px;
+    padding: 0 10px;
+}
+.rate:not(:checked) > input {
+    position:absolute;
+    top:-9999px;
+}
+.rate:not(:checked) > label {
+    float:right;
+    width:1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:30px;
+    color:#ccc;
+}
+.rate:not(:checked) > label:before {
+    content: '★ ';
+}
+.rate > input:checked ~ label {
+    color: #ffc700;    
+}
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+    color: #deb217;  
+}
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+    color: #c59b08;
 }
 </style>
