@@ -151,8 +151,7 @@ def getToRead(request : HttpRequest, user_id : int) -> JsonResponse:
                 for k in range(len(allbooks)):
                     allbooksobj.append(get_object_or_404(Book, id=allbooks[k]))
                 return JsonResponse({'userbooks': [book.to_dict() for book in allbooksobj]}, status=200)
-            else:
-                return JsonResponse({'userbooks': ''}, status=200)
+        return JsonResponse({'userbooks': ''}, status=200)
 
 def getCompleted(request : HttpRequest, user_id : int) -> JsonResponse:
     if request.method == "GET":
@@ -170,8 +169,7 @@ def getCompleted(request : HttpRequest, user_id : int) -> JsonResponse:
                 for k in range(len(allbooks)):
                     allbooksobj.append(get_object_or_404(Book, id=allbooks[k]))
                 return JsonResponse({'userbooks': [book.to_dict() for book in allbooksobj]}, status=200)
-            else:
-                return JsonResponse({'userbooks': ''}, status=200)      
+        return JsonResponse({'userbooks': ''}, status=200)      
 
 def addBook(request : HttpRequest, user_id : int, book_id : int) -> JsonResponse:
     if request.method == "GET":
