@@ -241,3 +241,13 @@ def resetQuiz(request: HttpRequest) -> JsonResponse:
     get_object_or_404(UserPreference, user=user).delete()
     return JsonResponse({'deletesuccess':'deletesuccess'},status=200)
 
+def getQuizResults(request:HttpRequest, user_id:int) -> JsonResponse:
+    user = get_object_or_404(User, id=user_id)
+    preference = get_object_or_404(UserPreference, user=user)
+    books = preference.likedbooks.split(",")
+    booksobj = []
+
+    for i in (range(len(books)-1)):
+        booksobj.append(get_object_or_404(Book, id=books[i]))
+    return JsonResponse({'books':[book.to_dict() for book in booksobj]},status=200)
+

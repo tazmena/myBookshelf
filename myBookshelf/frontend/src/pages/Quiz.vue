@@ -30,7 +30,15 @@
 		</div>
 
 		<div v-else>
-			<p></p>
+			<div v-if="likedBooks.length">
+				<div v-for="(book, index) in likedBooks" :key="index"> <!-- Reference for search https://www.youtube.com/watch?v=0TMy-5srdlA-->
+					<div class="singlebook">
+						{{ index+1 }}. {{ book.title }}
+					</div>
+				</div>
+			</div>
+			<div v-else><p></p></div>
+
 		</div>
 
 	</div>
@@ -49,6 +57,7 @@ export default {
 			user_id: 0,
 			books: [],
 			bookId: 0,
+			likedBooks: []
 		};
 	},
 	computed: {
@@ -71,6 +80,7 @@ export default {
 			this.user = data.user
 			this.user_id = data.user_id
 			console.log("Quiz",this.user_id)
+			this.getQuizResults()
 		},
 
 		async getBookData(){
@@ -117,7 +127,18 @@ export default {
 			});
 			let data = await response.json();
 			alert("Quiz has been reset!")
-		}
+		},
+
+		async getQuizResults(){
+			let response = await fetch("http://localhost:8000/bookapp/getQuizResults/"+this.user_id, {
+				credentials: "include",
+				mode: "cors",
+				referrerPolicy: "no-referrer",
+				method: "GET",
+			});
+			let data = await response.json();
+			this.likedBooks = data.books
+		},
 	},
 
 	async mounted() {
