@@ -35,6 +35,7 @@ You may need to install the following:
  
  To get to the login page, go to http://localhost:8000/bookapp/
  Ensure that this is local host and not numbers such as 127...
+ Please note that the recommendations take a while to load.
  
  In case it is needed, here are the admin login details:
  username: admin
