@@ -8,7 +8,7 @@
             <h2>Log in to myBookshelf</h2>
             {% csrf_token %}
             <label for="username">Username:</label>
-            {{form.username}}<br>
+            {{form.username}}<br> <!--fields for login form called from forms.py, making use of Django modelForm-->
             <label for="password">Password:</label>
             {{form.password}}<br>
             <input type="submit" value="Submit" id="submit"><br>
@@ -16,7 +16,7 @@
 
             {% if messages %}
             {% for message in messages %}
-                <p id="msg"{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                <p id="msg"{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p> <!--makes use of Django messages framework to notify user if login is successful or not-->
             {% endfor %}
         {% endif %}
         </form>

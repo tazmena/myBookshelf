@@ -92,11 +92,12 @@ export default {
 		},
 
 		async addBookToRead(bookId){
-			let response = await fetch("http://localhost:8000/bookapp/addBookToRead/"+this.user_id+"/"+bookId, {
+			let response = await fetch("http://localhost:8000/bookapp/addBookToRead", {
 				credentials: "include",
 				mode: "cors",
 				referrerPolicy: "no-referrer",
-				method: "GET",
+				method: "POST",
+				body: JSON.stringify({user_id: this.user_id, book_id: bookId}),
 			});
 			let data = await response.json();
 			alert("Book has been added.");

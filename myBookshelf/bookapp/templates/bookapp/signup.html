@@ -30,11 +30,11 @@
     <div id="button">
         <input type="submit" value="Submit" id="submit">
     </div>
-    <p>Already have an account? <a href="http://localhost:8000/bookapp">Log in here</a></p>
+    <p>Already have an account? <a href="http://localhost:8000/bookapp">Log in here</a></p><!--Links back to login page-->
 
     {% if messages %}
         {% for message in messages %}
-            <p id="successmsg"{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            <p id="successmsg"{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p> <!--Makes use of Django messages framework Reference: https://docs.djangoproject.com/en/4.2/ref/contrib/messages/-->
         {% endfor %}
     {% endif %}
 </form> 

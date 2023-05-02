@@ -133,11 +133,12 @@ export default {
 		},
 
 		async moveToComplete(bookId){
-			let response = await fetch("http://localhost:8000/bookapp/moveToComplete/"+this.user_id+"/"+bookId, {
+			let response = await fetch("http://localhost:8000/bookapp/moveToComplete", {
 				credentials: "include",
 				mode: "cors",
 				referrerPolicy: "no-referrer",
-				method: "GET",
+				method: "PUT",
+				body: JSON.stringify({ user_id: this.user_id, book_id: bookId}),
 			});
 			let data = await response.json();
 		},
